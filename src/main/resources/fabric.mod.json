@@ -3,17 +3,16 @@
   "id": "leashmod",
   "version": "${version}",
 
-  "name": "Pog5's Leashable Players",
-  "description": "A simple mod that let's you leash players.",
+  "name": "Leashable Players",
+  "description": "A mod that let's you leash players with configurable gamerules!",
   "authors": [
-    "Me!"
+    "pog5", "terminalmaid"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/pog5/mc-leashplayers"
   },
 
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/modid/icon.png",
 
   "environment": "*",
@@ -31,8 +30,5 @@
     "fabric-api": "*",
     "minecraft": "~1.19.3",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }

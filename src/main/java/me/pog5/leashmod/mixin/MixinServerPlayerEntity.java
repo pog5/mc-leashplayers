@@ -37,6 +37,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
                 leashplayers$disabled()
                 || !leashplayers$holder.isAlive()
                 || !leashplayers$self.isAlive()
+                || !leashplayers$self.isDisconnected()
                 || leashplayers$self.hasVehicle()
             )
         ) {

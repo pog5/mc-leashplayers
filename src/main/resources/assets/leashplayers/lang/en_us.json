@@ -1,0 +1,5 @@
+{
+    "gamerule.leashPlayersEnabled": "Enable players leading other players",
+    "gamerule.leashPlayersDistanceMin": "Minimum player lead length before applying knockback",
+    "gamerule.leashPlayersDistanceMax": "Maximum player lead length before breaking"
+}

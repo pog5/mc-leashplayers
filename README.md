@@ -5,7 +5,7 @@
 Just drop the .jar from releases into your mods folder.
 If there is no release then please get a Jar from the actions tab above.
 
-If you are a developer you can build the mod using Gradle or IntelliJ (reccomended).
+If you are a developer you can build the mod using IntelliJ IDEA (reccomended) [Go on the Gradle tab in the right then run the `build` task] or you can use `./gradlew build`.
 
 ## License
 

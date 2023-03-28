@@ -3,8 +3,9 @@
 ## Setup
 
 Just drop the .jar from releases into your mods folder.
+If there is no release then please get a Jar from the actions tab above.
 
-If your a developer you can use `./gradlew build`
+If you are a developer you can build the mod using Gradle or IntelliJ (reccomended).
 
 ## License
 

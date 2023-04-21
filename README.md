@@ -7,6 +7,10 @@ If there is no release then please get a Jar from the actions tab above.
 
 If you are a developer you can build the mod using IntelliJ IDEA (reccomended) [Go on the Gradle tab in the right then run the `build` task] or you can use `./gradlew build`.
 
+## Incompatabilities
+
+This mod does not work with Origins for some reason.
+
 ## License
 
 This mod is available under the MIT license. Feel free to learn from it and incorporate it in your own projects.

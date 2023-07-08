@@ -13,7 +13,7 @@
   },
 
   "license": "MIT",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/leashplayers/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -24,7 +24,6 @@
   "mixins": [
     "leashplayers.mixins.json"
   ],
-  "accessWidener" : "leashplayers.accesswidener",
   "depends": {
     "fabricloader": ">=0.14.14",
     "fabric-api": "*",

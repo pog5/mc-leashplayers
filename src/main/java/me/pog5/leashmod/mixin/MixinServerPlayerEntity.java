@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class MixinServerPlayerEntity implements LeashImpl extends PlayerEntityMixin {
+public abstract class MixinServerPlayerEntity extends PlayerEntityMixin implements LeashImpl {
     private final ServerPlayerEntity leashplayers$self = (ServerPlayerEntity) (Object) this;
     private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(this.getworld());
 

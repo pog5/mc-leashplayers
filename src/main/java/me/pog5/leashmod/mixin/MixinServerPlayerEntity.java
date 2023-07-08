@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayerEntity.class)
 public abstract class MixinServerPlayerEntity implements LeashImpl {
     private final ServerPlayerEntity leashplayers$self = (ServerPlayerEntity) (Object) this;
-    private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(leashplayers$self.world);
+    private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(leashplayers$self.getworld());
 
     private LeashProxyEntity leashplayers$proxy;
     private Entity leashplayers$holder;
@@ -70,7 +70,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
         ServerPlayerEntity player = leashplayers$self;
         Entity holder = leashplayers$holder;
         if (holder == null) return;
-        if (holder.world != player.world) return;
+        if (holder.getWorld() != player.getWorld()) return;
 
         float distance = player.distanceTo(holder);
         if (distance < leashplayers$settings.getDistanceMin()) {
@@ -101,7 +101,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
 
         if (leashplayers$proxy == null) {
             leashplayers$proxy = new LeashProxyEntity(leashplayers$self);
-            leashplayers$self.world.spawnEntity(leashplayers$proxy);
+            leashplayers$self.getWorld().spawnEntity(leashplayers$proxy);
         }
         leashplayers$proxy.attachLeash(leashplayers$holder, true);
 

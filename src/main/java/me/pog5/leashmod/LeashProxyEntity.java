@@ -18,7 +18,7 @@ public final class LeashProxyEntity extends TurtleEntity {
         if (proxyIsRemoved()) return false;
 
         if (target == null) return true;
-        if (target.world != world || !target.isAlive()) return true;
+        if (target.getWorld() != getWorld() || !target.isAlive()) return true;
 
         Vec3d posActual = getPos();
         Vec3d posTarget = target.getPos().add(0.0D, 1.3D, -0.15D);
@@ -36,7 +36,7 @@ public final class LeashProxyEntity extends TurtleEntity {
 
     @Override
     public void tick() {
-        if (world.isClient) return;
+        if (this.getWorld().isClient) return;
         if (proxyUpdate() && !proxyIsRemoved()) {
             proxyRemove();
         }
@@ -57,7 +57,7 @@ public final class LeashProxyEntity extends TurtleEntity {
     public static final String TEAM_NAME = "leashplayersimpl";
 
     public LeashProxyEntity(LivingEntity target) {
-        super(EntityType.TURTLE, target.world);
+        super(EntityType.TURTLE, target.getWorld());
 
         this.target = target;
 

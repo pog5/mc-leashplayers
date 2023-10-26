@@ -102,6 +102,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
         if (leashplayers$proxy == null) {
             leashplayers$proxy = new LeashProxyEntity(leashplayers$self);
             leashplayers$self.getWorld().spawnEntity(leashplayers$proxy);
+            leashplayers$proxy.refreshPositionAndAngles(leashplayers$self.getX(), leashplayers$self.getY(), leashplayers$self.getZ(), 0.0F, 0.0F);
         }
         leashplayers$proxy.attachLeash(leashplayers$holder, true);
 

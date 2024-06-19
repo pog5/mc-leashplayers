@@ -12,6 +12,7 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -103,6 +104,10 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
             leashplayers$proxy = new LeashProxyEntity(leashplayers$self);
             leashplayers$self.getWorld().spawnEntity(leashplayers$proxy);
             leashplayers$proxy.refreshPositionAndAngles(leashplayers$self.getX(), leashplayers$self.getY(), leashplayers$self.getZ(), 0.0F, 0.0F);
+            final Vec3d pos = new Vec3d(leashplayers$self.getX(), leashplayers$self.getY(), leashplayers$self.getZ());
+            leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
+            leashplayers$proxy.refreshPositionAfterTeleport(pos);
+            leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
         }
         leashplayers$proxy.attachLeash(leashplayers$holder, true);
 

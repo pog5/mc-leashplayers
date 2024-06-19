@@ -1,6 +1,7 @@
 package me.pog5.leashmod.mixin;
 
 import me.pog5.leashmod.LeashProxyEntity;
+import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.MinecraftServer;
@@ -20,7 +21,7 @@ public abstract class MixinTurtleEntity {
         MinecraftServer server = self.getServer();
         if (server == null) return;
 
-        Team team = server.getScoreboard().getPlayerTeam(self.getEntityName());
+        Team team = server.getScoreboard().getTeam(self.getNameForScoreboard());
         if (team != null && Objects.equals(team.getName(), LeashProxyEntity.TEAM_NAME)) {
             self.setInvulnerable(false);
             self.setHealth(0.0F);

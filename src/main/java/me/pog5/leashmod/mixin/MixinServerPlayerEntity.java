@@ -51,7 +51,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
             }
             else {
                 Entity holderActual = leashplayers$holder;
-                Entity holderTarget = leashplayers$proxy.getHoldingEntity();
+                Entity holderTarget = leashplayers$proxy.getLeashHolder();
 
                 if (holderTarget == null && holderActual != null) {
                     leashplayers$detach();

@@ -21,7 +21,12 @@ public final class LeashProxyEntity extends TurtleEntity {
         if (target.getWorld() != getWorld() || !target.isAlive()) return true;
 
         Vec3d posActual = getPos();
-        Vec3d posTarget = target.getPos().add(0.0D, 1.3D, -0.15D);
+        Vec3d posTarget;
+        if (target.getPitch() > 45) {
+            posTarget = target.getPos().add(0.0D, 1.9D, -0.15D);
+        } else {
+            posTarget = target.getPos().add(0.0D, 1.3D, -0.15D);
+        }
 
         if (!Objects.equals(posActual, posTarget)) {
             setRotation(0.0F, 0.0F);

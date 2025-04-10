@@ -5,6 +5,7 @@ import me.pog5.leashmod.LeashPlayers;
 import me.pog5.leashmod.LeashProxyEntity;
 import me.pog5.leashmod.LeashSettings;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -15,33 +16,50 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class MixinServerPlayerEntity implements LeashImpl {
-    private final ServerPlayerEntity leashplayers$self = (ServerPlayerEntity) (Object) this;
-    private final ServerWorld world = leashplayers$self.getServerWorld();
-    private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(world);
+    @Shadow
+    public abstract ServerWorld getServerWorld();
 
+    @Unique
+    private ServerPlayerEntity getSelf() {
+        return (ServerPlayerEntity)(Object)this;
+    }
+
+    @Shadow
+    public abstract boolean isDisconnected();
+
+    @Unique
+    private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(this.getServerWorld());
+
+    @Unique
     private LeashProxyEntity leashplayers$proxy;
+    @Unique
     private Entity leashplayers$holder;
 
+    @Unique
     private int leashplayers$lastage;
 
+    @Unique
     private boolean leashplayers$disabled() {
         return !leashplayers$settings.isEnabled();
     }
 
+    @Unique
     private void leashplayers$update() {
         if (
             leashplayers$holder != null && (
                 leashplayers$disabled()
                 || !leashplayers$holder.isAlive()
-                || !leashplayers$self.isAlive()
-                || leashplayers$self.isDisconnected()
-                || leashplayers$self.hasVehicle()
+                || !getSelf().isAlive()
+                || isDisconnected()
+                || getSelf().hasVehicle()
             )
         ) {
             leashplayers$detach();
@@ -69,8 +87,9 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
         leashplayers$apply();
     }
 
+    @Unique
     private void leashplayers$apply() {
-        ServerPlayerEntity player = leashplayers$self;
+        ServerPlayerEntity player = getSelf();
         Entity holder = leashplayers$holder;
         if (holder == null) return;
         if (holder.getWorld() != player.getWorld()) return;
@@ -99,28 +118,29 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
         player.velocityDirty = false;
     }
 
+    @Unique
     private void leashplayers$attach(Entity entity) {
+//        LeashPlayers.LOGGER.info("LeashPlayers$attach");
         leashplayers$holder = entity;
+        Entity player = getSelf();
 
         if (leashplayers$proxy == null) {
-            leashplayers$proxy = new LeashProxyEntity(leashplayers$self);
-            leashplayers$self.getWorld().spawnEntity(leashplayers$proxy);
-            leashplayers$proxy.refreshPositionAndAngles(leashplayers$self.getX(), leashplayers$self.getY(), leashplayers$self.getZ(), 0.0F, 0.0F);
-            final Vec3d pos = new Vec3d(leashplayers$self.getX(), leashplayers$self.getY(), leashplayers$self.getZ());
+            leashplayers$proxy = new LeashProxyEntity((LivingEntity) player);
+            player.getWorld().spawnEntity(leashplayers$proxy);
+            leashplayers$proxy.refreshPositionAndAngles(player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F);
+            final Vec3d pos = new Vec3d(player.getX(), player.getY(), player.getZ());
             leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
             leashplayers$proxy.refreshPositionAfterTeleport(pos);
             leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
         }
         leashplayers$proxy.attachLeash(leashplayers$holder, true);
 
-        if (leashplayers$self.hasVehicle()) {
-            leashplayers$self.stopRiding();
-        }
-
-        leashplayers$lastage = leashplayers$self.age;
+        leashplayers$lastage = player.age;
     }
 
+    @Unique
     private void leashplayers$detach() {
+//        LeashPlayers.LOGGER.info("LeashPlayers$detach");
         leashplayers$holder = null;
 
         if (leashplayers$proxy != null) {
@@ -131,8 +151,9 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
         }
     }
 
+    @Unique
     private void leashplayers$drop() {
-        leashplayers$self.dropItem(leashplayers$self.getServerWorld(), Items.LEAD);
+        getSelf().dropItem(getServerWorld(), Items.LEAD);
     }
 
     @Inject(method = "tick()V", at = @At("TAIL"))
@@ -150,17 +171,26 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
                 stack.decrement(1);
             }
             leashplayers$attach(player);
+//            LeashPlayers.LOGGER.info("LeashPlayers$interact: success: attached");
             return ActionResult.SUCCESS;
         }
 
-        if (leashplayers$holder == player && leashplayers$lastage + 20 < leashplayers$self.age) {
+        if (leashplayers$holder == player && leashplayers$lastage + 20 < getSelf().age) {
             if (!player.isCreative()) {
                 leashplayers$drop();
             }
             leashplayers$detach();
+//            LeashPlayers.LOGGER.info("LeashPlayers$interact: success: detatched");
             return ActionResult.SUCCESS;
         }
 
+//        LeashPlayers.LOGGER.info("LeashPlayers$interact: pass");
         return ActionResult.PASS;
+    }
+
+    @Inject(method = "onDisconnect", at = @At("RETURN"))
+    private void leashplayers$disconnect(CallbackInfo ci) {
+        leashplayers$detach();
+        leashplayers$drop();
     }
 }

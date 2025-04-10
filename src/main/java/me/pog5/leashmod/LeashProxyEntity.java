@@ -1,6 +1,7 @@
 package me.pog5.leashmod;
 
 import net.minecraft.entity.*;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.AbstractTeam;
@@ -50,7 +51,19 @@ public final class LeashProxyEntity extends TurtleEntity {
     }
 
     public void proxyRemove() {
-        super.remove(RemovalReason.DISCARDED);
+        MinecraftServer server = getServer();
+        if (server == null) {
+            return;
+        }
+        ServerScoreboard scoreboard = server.getScoreboard();
+
+        Team team = scoreboard.getTeam(TEAM_NAME);
+        if (team == null) {
+            return;
+        }
+
+        scoreboard.removeScoreHolderFromTeam(getNameForScoreboard(), team);
+        super.discard();
     }
 
     @Override
@@ -92,23 +105,27 @@ public final class LeashProxyEntity extends TurtleEntity {
         return 1.0F;
     }
 
-    /*@Override
-    public void detachLeash(boolean sendPacket, boolean dropItem) {
-    }*/
-
     @Override
     protected void initGoals() {
+        //noinspection UnnecessaryReturnStatement
+        return;
     }
 
     @Override
     protected void pushAway(Entity entity) {
+        //noinspection UnnecessaryReturnStatement
+        return;
     }
 
     @Override
     public void pushAwayFrom(Entity entity) {
+        //noinspection UnnecessaryReturnStatement
+        return;
     }
 
     @Override
     public void onPlayerCollision(PlayerEntity player) {
+        //noinspection UnnecessaryReturnStatement
+        return;
     }
 }

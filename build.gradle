@@ -51,7 +51,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Carpet
-    modImplementation "maven.modrinth:carpet:${project.carpet_version}"
+//    modImplementation "maven.modrinth:carpet:${project.carpet_version}" // Not updated to 1.21.5 yet
 
 }
 

@@ -15,6 +15,7 @@ public final class LeashPlayers implements ModInitializer {
     private static GameRules.Key<GameRules.BooleanRule> ruleEnabled;
     private static GameRules.Key<DoubleRule> ruleDistanceMin;
     private static GameRules.Key<DoubleRule> ruleDistanceMax;
+    private static GameRules.Key<GameRules.BooleanRule> ruleAllowLeashedRemoveFenceKnot;
 
     public static LeashSettings getSettings(ServerWorld world) {
         return new LeashSettings() {
@@ -36,6 +37,11 @@ public final class LeashPlayers implements ModInitializer {
             public double getDistanceMax() {
                 return getGameRules().get(ruleDistanceMax).get();
             }
+
+            @Override
+            public boolean allowLeashedRemoveFenceKnot() {
+                return getGameRules().get(ruleAllowLeashedRemoveFenceKnot).get();
+            }
         };
     }
 
@@ -44,6 +50,7 @@ public final class LeashPlayers implements ModInitializer {
         ruleEnabled = GameRuleRegistry.register("leashPlayersEnabled", GameRules.Category.PLAYER, GameRuleFactory.createBooleanRule(true));
         ruleDistanceMin = GameRuleRegistry.register("leashPlayersDistanceMin", GameRules.Category.PLAYER, GameRuleFactory.createDoubleRule(4.0D));
         ruleDistanceMax = GameRuleRegistry.register("leashPlayersDistanceMax", GameRules.Category.PLAYER, GameRuleFactory.createDoubleRule(10.0D));
+        ruleAllowLeashedRemoveFenceKnot = GameRuleRegistry.register("leashPlayersAllowLeashedRemoveFenceKnot", GameRules.Category.PLAYER, GameRuleFactory.createBooleanRule(false));
         LOGGER.info("Initialized LeashPlayers");
     }
 }

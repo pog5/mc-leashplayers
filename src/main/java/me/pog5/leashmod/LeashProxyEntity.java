@@ -1,9 +1,7 @@
 package me.pog5.leashmod;
 
 import net.minecraft.entity.*;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.scoreboard.Team;
@@ -12,7 +10,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.Objects;
 
-public final class LeashProxyEntity extends TurtleEntity {
+public final class LeashProxyEntity extends TurtleEntity implements Leashable {
     private final LivingEntity target;
 
     private boolean proxyUpdate() {
@@ -23,11 +21,16 @@ public final class LeashProxyEntity extends TurtleEntity {
 
         Vec3d posActual = getPos();
         Vec3d posTarget;
-        if (target.getPitch() > 45) {
-            posTarget = target.getPos().add(0.0D, 1.9D, -0.15D);
+        double y = 1.0D;
+        if (target.getPitch() > 31) {
+            y = 1.9D;
         } else {
-            posTarget = target.getPos().add(0.0D, 1.3D, -0.15D);
+            y = 1.3D;
         }
+        if (target.isSneaking()) {
+            y -= 0.5D;
+        }
+        posTarget = target.getPos().add(0.0D, y, -0.15D);
 
         if (!Objects.equals(posActual, posTarget)) {
             setRotation(0.0F, 0.0F);
@@ -63,11 +66,8 @@ public final class LeashProxyEntity extends TurtleEntity {
         }
 
         scoreboard.removeScoreHolderFromTeam(getNameForScoreboard(), team);
+        teleport(0, -100, 0, false);
         super.discard();
-    }
-
-    @Override
-    public void remove(RemovalReason reason) {
     }
 
     public static final String TEAM_NAME = "leashplayersimpl";
@@ -80,6 +80,7 @@ public final class LeashProxyEntity extends TurtleEntity {
         setHealth(1.0F);
         setInvulnerable(true);
 
+        setAiDisabled(true);
         setBaby(true);
         setInvisible(true);
         noClip = true;
@@ -107,25 +108,13 @@ public final class LeashProxyEntity extends TurtleEntity {
 
     @Override
     protected void initGoals() {
-        //noinspection UnnecessaryReturnStatement
-        return;
     }
 
     @Override
     protected void pushAway(Entity entity) {
-        //noinspection UnnecessaryReturnStatement
-        return;
     }
 
     @Override
     public void pushAwayFrom(Entity entity) {
-        //noinspection UnnecessaryReturnStatement
-        return;
-    }
-
-    @Override
-    public void onPlayerCollision(PlayerEntity player) {
-        //noinspection UnnecessaryReturnStatement
-        return;
     }
 }

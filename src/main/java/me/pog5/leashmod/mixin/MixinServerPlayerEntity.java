@@ -16,6 +16,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,6 +43,12 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
     private LeashProxyEntity leashplayers$proxy;
     @Unique
     private Entity leashplayers$holder;
+    public Entity leashplayers$getHolder() {
+        return this.leashplayers$holder;
+    }
+    public boolean leashplayers$shouldCancel() {
+        return leashplayers$getHolder() != null && !leashplayers$settings.allowLeashedRemoveFenceKnot();
+    }
 
     @Unique
     private int leashplayers$lastage;
@@ -57,7 +64,6 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
             leashplayers$holder != null && (
                 leashplayers$disabled()
                 || !leashplayers$holder.isAlive()
-                || !getSelf().isAlive()
                 || isDisconnected()
                 || getSelf().hasVehicle()
             )
@@ -119,28 +125,28 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
     }
 
     @Unique
-    private void leashplayers$attach(Entity entity) {
-//        LeashPlayers.LOGGER.info("LeashPlayers$attach");
-        leashplayers$holder = entity;
-        Entity player = getSelf();
+    private void leashplayers$attach(Entity holder) {
+        LeashPlayers.LOGGER.info("LeashPlayers$attach");
+
+        leashplayers$holder = holder;
+        LivingEntity leashed = getSelf();
 
         if (leashplayers$proxy == null) {
-            leashplayers$proxy = new LeashProxyEntity((LivingEntity) player);
-            player.getWorld().spawnEntity(leashplayers$proxy);
-            leashplayers$proxy.refreshPositionAndAngles(player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F);
-            final Vec3d pos = new Vec3d(player.getX(), player.getY(), player.getZ());
+            leashplayers$proxy = new LeashProxyEntity(leashed);
+            leashed.getWorld().spawnEntity(leashplayers$proxy);
+            leashplayers$proxy.refreshPositionAndAngles(leashed.getX(), leashed.getY(), leashed.getZ(), 0.0F, 0.0F);
+            final Vec3d pos = new Vec3d(leashed.getX(), leashed.getY(), leashed.getZ());
             leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
             leashplayers$proxy.refreshPositionAfterTeleport(pos);
             leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
         }
         leashplayers$proxy.attachLeash(leashplayers$holder, true);
-
-        leashplayers$lastage = player.age;
+        leashplayers$lastage = leashed.age;
     }
 
     @Unique
     private void leashplayers$detach() {
-//        LeashPlayers.LOGGER.info("LeashPlayers$detach");
+        LeashPlayers.LOGGER.info("LeashPlayers$detach");
         leashplayers$holder = null;
 
         if (leashplayers$proxy != null) {
@@ -171,7 +177,6 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
                 stack.decrement(1);
             }
             leashplayers$attach(player);
-//            LeashPlayers.LOGGER.info("LeashPlayers$interact: success: attached");
             return ActionResult.SUCCESS;
         }
 
@@ -180,17 +185,25 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
                 leashplayers$drop();
             }
             leashplayers$detach();
-//            LeashPlayers.LOGGER.info("LeashPlayers$interact: success: detatched");
             return ActionResult.SUCCESS;
         }
 
-//        LeashPlayers.LOGGER.info("LeashPlayers$interact: pass");
         return ActionResult.PASS;
     }
 
     @Inject(method = "onDisconnect", at = @At("RETURN"))
     private void leashplayers$disconnect(CallbackInfo ci) {
-        leashplayers$detach();
-        leashplayers$drop();
+        if (leashplayers$holder != null) {
+            leashplayers$detach();
+            leashplayers$drop();
+        }
+    }
+
+    @Inject(method = "onDeath", at = @At("RETURN"))
+    private void leashplayers$onDeath(CallbackInfo ci) {
+        if (leashplayers$holder != null) {
+            leashplayers$detach();
+            leashplayers$drop();
+        }
     }
 }

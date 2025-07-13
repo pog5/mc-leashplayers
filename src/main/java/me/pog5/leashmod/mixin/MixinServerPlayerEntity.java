@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayerEntity.class)
 public abstract class MixinServerPlayerEntity implements LeashImpl {
     @Shadow
-    public abstract ServerWorld getServerWorld();
+    public abstract ServerWorld getWorld();
 
     @Unique
     private ServerPlayerEntity getSelf() {
@@ -37,7 +37,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
     public abstract boolean isDisconnected();
 
     @Unique
-    private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(this.getServerWorld());
+    private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(this.getWorld());
 
     @Unique
     private LeashProxyEntity leashplayers$proxy;
@@ -159,7 +159,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
 
     @Unique
     private void leashplayers$drop() {
-        getSelf().dropItem(getServerWorld(), Items.LEAD);
+        getSelf().dropItem(getWorld(), Items.LEAD);
     }
 
     @Inject(method = "tick()V", at = @At("TAIL"))

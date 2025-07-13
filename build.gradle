@@ -1,6 +1,7 @@
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.11-SNAPSHOT'
     id 'maven-publish'
+    id "com.modrinth.minotaur" version "2.8.7"
 }
 
 version = project.mod_version + "+" + project.minecraft_version
@@ -42,16 +43,14 @@ loom {
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Carpet
-//    modImplementation "maven.modrinth:carpet:${project.carpet_version}" // Not updated to 1.21.5 yet
+    modImplementation "maven.modrinth:carpet:${project.carpet_version}"
 
 }
 
@@ -67,12 +66,7 @@ tasks.withType(JavaCompile).configureEach {
     it.options.release = 21
 }
 
-
-
 java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
     withSourcesJar()
 
     sourceCompatibility = JavaVersion.VERSION_21
@@ -87,7 +81,6 @@ jar {
     }
 }
 
-// configure the maven publication
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
@@ -95,12 +88,18 @@ publishing {
             from components.java
         }
     }
+}
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "leashable-players"
+    versionNumber = "${version}"
+    versionType = "release"
+    uploadFile = remapJar
+    gameVersions = ["1.21.7", "1.21.6"]
+    loaders = ["fabric"]
+    dependencies {
+        // scope.type
+        required.project "fabric-api"
     }
 }

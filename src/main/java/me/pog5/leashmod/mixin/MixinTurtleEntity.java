@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @Mixin(TurtleEntity.class)
 public abstract class MixinTurtleEntity {
-    @Inject(method = "readCustomDataFromNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("RETURN"))
+    @Inject(method = "readCustomData", at = @At("RETURN"))
     private void leashplayers$onReadCustomDataFromNbt(CallbackInfo info) {
         TurtleEntity self = (TurtleEntity) (Object) this;
 

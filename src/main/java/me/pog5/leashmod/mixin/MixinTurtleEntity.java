@@ -18,7 +18,7 @@ public abstract class MixinTurtleEntity {
     private void leashplayers$onReadCustomDataFromNbt(CallbackInfo info) {
         TurtleEntity self = (TurtleEntity) (Object) this;
 
-        MinecraftServer server = self.getServer();
+        MinecraftServer server = self.getEntityWorld().getServer();
         if (server == null) return;
 
         Team team = server.getScoreboard().getTeam(self.getNameForScoreboard());

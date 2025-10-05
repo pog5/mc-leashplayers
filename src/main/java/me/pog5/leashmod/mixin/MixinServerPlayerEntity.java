@@ -25,9 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class MixinServerPlayerEntity implements LeashImpl {
-    @Shadow
-    public abstract ServerWorld getWorld();
-
     @Unique
     private ServerPlayerEntity getSelf() {
         return (ServerPlayerEntity)(Object)this;
@@ -36,8 +33,11 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
     @Shadow
     public abstract boolean isDisconnected();
 
+    @Shadow
+    public abstract ServerWorld getEntityWorld();
+
     @Unique
-    private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(this.getWorld());
+    private final LeashSettings leashplayers$settings = LeashPlayers.getSettings(this.getEntityWorld());
 
     @Unique
     private LeashProxyEntity leashplayers$proxy;
@@ -98,7 +98,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
         ServerPlayerEntity player = getSelf();
         Entity holder = leashplayers$holder;
         if (holder == null) return;
-        if (holder.getWorld() != player.getWorld()) return;
+        if (holder.getEntityWorld() != player.getEntityWorld()) return;
 
         float distance = player.distanceTo(holder);
         if (distance < leashplayers$settings.getDistanceMin()) {
@@ -133,7 +133,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
 
         if (leashplayers$proxy == null) {
             leashplayers$proxy = new LeashProxyEntity(leashed);
-            leashed.getWorld().spawnEntity(leashplayers$proxy);
+            leashed.getEntityWorld().spawnEntity(leashplayers$proxy);
             leashplayers$proxy.refreshPositionAndAngles(leashed.getX(), leashed.getY(), leashed.getZ(), 0.0F, 0.0F);
             final Vec3d pos = new Vec3d(leashed.getX(), leashed.getY(), leashed.getZ());
             leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
@@ -159,7 +159,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
 
     @Unique
     private void leashplayers$drop() {
-        getSelf().dropItem(getWorld(), Items.LEAD);
+        getSelf().dropItem(getEntityWorld(), Items.LEAD);
     }
 
     @Inject(method = "tick()V", at = @At("TAIL"))

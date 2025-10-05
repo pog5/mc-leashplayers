@@ -17,9 +17,9 @@ public final class LeashProxyEntity extends TurtleEntity implements Leashable {
         if (proxyIsRemoved()) return false;
 
         if (target == null) return true;
-        if (target.getWorld() != getWorld() || !target.isAlive()) return true;
+        if (target.getEntityWorld() != getEntityWorld() || !target.isAlive()) return true;
 
-        Vec3d posActual = getPos();
+        Vec3d posActual = getEntityPos();
         Vec3d posTarget;
         double y = 1.0D;
         if (target.getPitch() > 31) {
@@ -30,7 +30,7 @@ public final class LeashProxyEntity extends TurtleEntity implements Leashable {
         if (target.isSneaking()) {
             y -= 0.5D;
         }
-        posTarget = target.getPos().add(0.0D, y, -0.15D);
+        posTarget = target.getEntityPos().add(0.0D, y, -0.15D);
 
         if (!Objects.equals(posActual, posTarget)) {
             setRotation(0.0F, 0.0F);
@@ -43,7 +43,7 @@ public final class LeashProxyEntity extends TurtleEntity implements Leashable {
 
     @Override
     public void tick() {
-        if (this.getWorld().isClient) return;
+        if (this.getEntityWorld().isClient()) return;
         if (proxyUpdate() && !proxyIsRemoved()) {
             proxyRemove();
         }
@@ -54,7 +54,7 @@ public final class LeashProxyEntity extends TurtleEntity implements Leashable {
     }
 
     public void proxyRemove() {
-        MinecraftServer server = getServer();
+        MinecraftServer server = getEntityWorld().getServer();
         if (server == null) {
             return;
         }
@@ -73,7 +73,7 @@ public final class LeashProxyEntity extends TurtleEntity implements Leashable {
     public static final String TEAM_NAME = "leashplayersimpl";
 
     public LeashProxyEntity(LivingEntity target) {
-        super(EntityType.TURTLE, target.getWorld());
+        super(EntityType.TURTLE, target.getEntityWorld());
 
         this.target = target;
 
@@ -85,7 +85,7 @@ public final class LeashProxyEntity extends TurtleEntity implements Leashable {
         setInvisible(true);
         noClip = true;
 
-        MinecraftServer server = getServer();
+        MinecraftServer server = getEntityWorld().getServer();
         if (server != null) {
             ServerScoreboard scoreboard = server.getScoreboard();
 

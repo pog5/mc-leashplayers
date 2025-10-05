@@ -50,7 +50,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Carpet
-    modImplementation "maven.modrinth:carpet:${project.carpet_version}"
+//    modImplementation "maven.modrinth:carpet:${project.carpet_version}"
 
 }
 
@@ -96,7 +96,7 @@ modrinth {
     versionNumber = "${version}"
     versionType = "release"
     uploadFile = remapJar
-    gameVersions = ["1.21.7", "1.21.6"]
+    gameVersions = ["1.21.", "1.21.6"]
     loaders = ["fabric"]
     dependencies {
         // scope.type

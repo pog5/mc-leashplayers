@@ -77,6 +77,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
                 leashplayers$proxy = null;
             }
             else {
+                leashplayers$proxy.setInvisible(true);
                 Entity holderActual = leashplayers$holder;
                 Entity holderTarget = leashplayers$proxy.getLeashHolder();
 
@@ -136,9 +137,7 @@ public abstract class MixinServerPlayerEntity implements LeashImpl {
             leashed.getEntityWorld().spawnEntity(leashplayers$proxy);
             leashplayers$proxy.refreshPositionAndAngles(leashed.getX(), leashed.getY(), leashed.getZ(), 0.0F, 0.0F);
             final Vec3d pos = new Vec3d(leashed.getX(), leashed.getY(), leashed.getZ());
-            leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
             leashplayers$proxy.refreshPositionAfterTeleport(pos);
-            leashplayers$proxy.setInvisible(!leashplayers$proxy.isInvisible());
         }
         leashplayers$proxy.attachLeash(leashplayers$holder, true);
         leashplayers$lastage = leashed.age;

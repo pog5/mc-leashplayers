@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "leashmod",
+  "version": "${version}",
+
+  "name": "Leashable Players",
+  "description": "A mod that lets you leash players with configurable gamerules!",
+  "authors": [
+    "pog5", "terminalmaid"
+  ],
+  "contact": {
+    "sources": "https://github.com/pog5/mc-leashplayers"
+  },
+
+  "license": "MIT",
+  "icon": "assets/leashmod/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.pog5.leashmod.fabric.LeashModFabric"
+    ]
+  },
+  "mixins": [
+    "leashmod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=${minecraft}-",
+    "java": ">=${java}"
+  }
+}

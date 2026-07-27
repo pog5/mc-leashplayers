@@ -1,105 +1,49 @@
 plugins {
-    id 'fabric-loom' version '1.14-SNAPSHOT'
-    id 'maven-publish'
-    id "com.modrinth.minotaur" version "2.8.7"
+    id "architectury-plugin" version "3.5.169"
+    id "dev.architectury.loom-no-remap" version "1.17.491" apply false
+    id "com.gradleup.shadow" version "9.4.2" apply false
 }
 
-version = project.mod_version + "+" + project.minecraft_version
-group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
+architectury {
+    minecraft = rootProject.minecraft_version
 }
 
-repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
-            }
-        }
-        filter {
-            includeGroup "maven.modrinth"
-        }
-    }
-}
+subprojects {
+    apply plugin: "dev.architectury.loom-no-remap"
 
-loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        "leashmod" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
-
-}
-
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    // Carpet
-//    modImplementation "maven.modrinth:carpet:${project.carpet_version}"
-
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
-}
-
-java {
-    withSourcesJar()
-
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
-jar {
-    inputs.property "archivesName", project.base.archivesName
-
-    from("LICENSE") {
-        rename { "${it}_${project.base.archivesName.get()}"}
-    }
-}
-
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
-        }
-    }
-}
-
-modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
-    projectId = "leashable-players"
-    versionNumber = "${version}"
-    versionType = "release"
-    uploadFile = remapJar
-    gameVersions = ["1.21.", "1.21.6"]
-    loaders = ["fabric"]
     dependencies {
-        // scope.type
-        required.project "fabric-api"
+        // 26.x is unobfuscated: pull Minecraft with official names, no mappings needed.
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    }
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
+
+    version = rootProject.mod_version
+    group = rootProject.maven_group
+
+    base {
+        archivesName = "${rootProject.archives_base_name}-${project.name}"
+    }
+
+    repositories {
+        maven { url = "https://maven.architectury.dev/" }
+        maven { url = "https://maven.neoforged.net/releases" }
+    }
+
+    def javaVersion = JavaVersion.toVersion(rootProject.java_version)
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = "UTF-8"
+        options.release = rootProject.java_version.toInteger()
+    }
+
+    java {
+        withSourcesJar()
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
     }
 }

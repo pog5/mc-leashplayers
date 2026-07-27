@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/pog5/mc-leashplayers/issues"
+
+[[mods]]
+modId = "leashmod"
+version = "${version}"
+displayName = "Leashable Players"
+authors = "pog5, terminalmaid"
+description = '''
+A mod that lets you leash players with configurable gamerules!
+'''
+logoFile = "assets/leashmod/icon.png"
+
+[[mixins]]
+config = "leashmod.mixins.json"
+
+[[dependencies.leashmod]]
+modId = "neoforge"
+type = "required"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.leashmod]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft},)"
+ordering = "NONE"
+side = "BOTH"

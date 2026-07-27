@@ -1,0 +1,6 @@
+{
+    "gamerule.leash_players_enabled": "Enable players leashing other players",
+    "gamerule.leash_players_distance_min": "Minimum player leash length before applying knockback",
+    "gamerule.leash_players_distance_max": "Maximum player leash length before breaking",
+    "gamerule.leash_players_allow_leashed_remove_fence_knot": "Allow leashed players to remove leash knots from fences"
+}

@@ -1,0 +1,7 @@
+name: LeashablePlayers
+version: '${version}'
+main: me.pog5.leashmod.bukkit.LeashPlugin
+api-version: '1.13'
+authors: [pog5, terminalmaid]
+description: Leash other players with a lead.
+website: https://modrinth.com/mod/leashable-players

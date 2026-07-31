@@ -1,0 +1,13 @@
+# Leashable Players
+
+# Master switch.
+enabled: true
+
+# Distance (blocks) before the leash starts pulling the leashed player back.
+distance-min: 4
+
+# Distance (blocks) at which the leash snaps and the lead drops.
+distance-max: 10
+
+# May a leashed player break leash knots off fences?
+allow-leashed-remove-fence-knot: false

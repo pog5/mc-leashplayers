@@ -1,0 +1,2 @@
+// Standalone build — deliberately not part of the root Architectury/loom project.
+rootProject.name = "leashmod-bukkit"

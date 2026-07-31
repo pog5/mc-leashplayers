@@ -41,3 +41,7 @@ replay_*.log
 
 # build outputs (published to Modrinth)
 dist/
+
+# bukkit module uses the root wrapper; don't commit a copy
+bukkit/gradle/
+bukkit/gradlew
